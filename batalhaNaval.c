@@ -13,35 +13,58 @@ void InicializarTabuleiro(int tabuleiro[10][10]) {
 
 
 // Função para verificar se o posicionamento do navio é válido
-int PosicaoValida(int tabuleiro[10][10], int linha, int coluna, int tamanho, int horizontal) {
-    if (horizontal) {
-        if (coluna + tamanho > 10) return 0;        //Testa se o barco não vai cair pra fora do tabuleiro pelo tamanho
+int PosicaoValida(int tabuleiro[10][10], int linha, int coluna, int tamanho, int direcao) {
+    if (direcao == 0) { // Horizontal
+        if (coluna + tamanho > 10) return 0;
         for (int i = 0; i < tamanho; i++) {
             if (tabuleiro[linha][coluna + i] == 3) return 0;
         }
-    } else {
+    } else if (direcao == 1) { // Vertical
         if (linha + tamanho > 10) return 0;
         for (int i = 0; i < tamanho; i++) {
             if (tabuleiro[linha + i][coluna] == 3) return 0;
+        }
+    } else if (direcao == 2) { // Diagonal superior direita
+        if (linha - tamanho + 1 < 0 || coluna + tamanho > 10) return 0;
+        for (int i = 0; i < tamanho; i++) {
+            if (tabuleiro[linha - i][coluna + i] == 3) return 0;
+        }
+    } else if (direcao == 3) { // Diagonal inferior direita
+        if (linha + tamanho > 10 || coluna + tamanho > 10) return 0;
+        for (int i = 0; i < tamanho; i++) {
+            if (tabuleiro[linha + i][coluna + i] == 3) return 0;
+        }
+    } else if (direcao == 4) { // Diagonal superior esquerda
+        if (linha - tamanho + 1 < 0 || coluna - tamanho + 1 < 0) return 0;
+        for (int i = 0; i < tamanho; i++) {
+            if (tabuleiro[linha - i][coluna - i] == 3) return 0;
+        }
+    } else if (direcao == 5) { // Diagonal inferior esquerda
+        if (linha + tamanho > 10 || coluna - tamanho + 1 < 0) return 0;
+        for (int i = 0; i < tamanho; i++) {
+            if (tabuleiro[linha + i][coluna - i] == 3) return 0;
         }
     }
     return 1;
 }
 
+
 // Função para posicionar um navio
-void PosicionarNavio(int tabuleiro[10][10], int linha, int coluna, int tamanho, int horizontal) {
-    if (PosicaoValida(tabuleiro, linha, coluna, tamanho, horizontal)) {
+void PosicionarNavio(int tabuleiro[10][10], int linha, int coluna, int tamanho, int direcao) {
+    if (PosicaoValida(tabuleiro, linha, coluna, tamanho, direcao)) {
         for (int i = 0; i < tamanho; i++) {
-            if (horizontal) {
-                tabuleiro[linha][coluna + i] = 3;
-            } else {
-                tabuleiro[linha + i][coluna] = 3;
-            }
+            if (direcao == 0) tabuleiro[linha][coluna + i] = 3;       // Horizontal
+            else if (direcao == 1) tabuleiro[linha + i][coluna] = 3;  // Vertical
+            else if (direcao == 2) tabuleiro[linha - i][coluna + i] = 3; // Diagonal superior direita
+            else if (direcao == 3) tabuleiro[linha + i][coluna + i] = 3; // Diagonal inferior direita
+            else if (direcao == 4) tabuleiro[linha - i][coluna - i] = 3; // Diagonal superior esquerda
+            else if (direcao == 5) tabuleiro[linha + i][coluna - i] = 3; // Diagonal inferior esquerda
         }
     } else {
         printf("Erro: O navio não pode ser posicionado nesta coordenada.\n");
     }
 }
+
 
 // Função para exibir o tabuleiro
 void ExibirTabuleiro(int tabuleiro[10][10]) {
@@ -73,14 +96,13 @@ int main() {
     // Posiciona dois navios (Horizontal = 1, Vertical = 0)
     PosicionarNavio(tabuleiro, 2, 3, 3, 1);  // Navio horizontal de 3 posições
     PosicionarNavio(tabuleiro, 6, 6, 3, 0);  // Navio vertical de 3 posições
+    PosicionarNavio(tabuleiro, 7, 2, 3, 3); // Navio Diagonal inferior direita
+    PosicionarNavio(tabuleiro, 5, 7, 3, 4); // Navio Diagonal superior esquerda
 
     // Exibe o tabuleiro atualizado
     ExibirTabuleiro(tabuleiro);
 
-    // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
-    // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
-    // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
-    // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
+   
 
     // Nível Mestre - Habilidades Especiais com Matrizes
     // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
